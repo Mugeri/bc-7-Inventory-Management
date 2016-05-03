@@ -12,7 +12,8 @@ def login():
 		user = User.query.filter_by(username=form.username.data).first()
 		if user is not None and check_password_hash(user.password_hash, form.password.data):
 			#login_user(user, form.remember_me.data)
-			return redirect(request.args.get('next') or url_for('index'))
+			#import pdb; pdb.set_trace()
+			return redirect(url_for('user', username=str(user.username)))
 
 	flash('Invalid username or password.')
 	return render_template('/login.html', form=form)
@@ -34,3 +35,13 @@ def register():
 		flash('You can now login.')
 		return redirect(url_for('login'))
 	return render_template('register.html', form=form)
+
+@app.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    if user == None:
+        flash('User %s not found.' % username)
+        return redirect(url_for('index'))
+    if user.level == 1:
+    	return render_template('admin.html', user=user)
+    return render_template('user.html', user=user)

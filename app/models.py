@@ -54,6 +54,7 @@ class Assets(db.Model):
 	serialnumber = db.Column(db.String(50), index=True, unique=True)
 	andelaserial = db.Column(db.String(50), index=True, unique=True)
 	datebought = db.Column(db.DateTime)
+	available = db.Column(db.Boolean, unique=False, default=True)
 
 	def __repr__(self):
 		return '<Asset %r>' % (self.assetname)
