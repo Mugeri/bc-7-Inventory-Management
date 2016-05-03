@@ -5,7 +5,7 @@ from wtforms import ValidationError
 from models import User
 
 class LoginForm(Form):
-	email = StringField('Email', validators=[Required(), Length(1, 64),Email()])
+	username = StringField('Username', validators=[Required()])
 	password = PasswordField('Password', validators=[Required()])
 	remember_me = BooleanField('Keep me logged in')
 	submit = SubmitField('Log In')
@@ -24,3 +24,4 @@ class RegistrationForm(Form):
 	def validate_username(self, field):
 		if User.query.filter_by(username=field.data).first():
 			raise ValidationError('Username already in use.')
+

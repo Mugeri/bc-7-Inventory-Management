@@ -5,6 +5,7 @@ from . import login_manager
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(120), index=True, unique=True)
     level = db.Column(db.Integer, index=True, unique=False)
 
@@ -12,9 +13,9 @@ class User(db.Model):
     def load_user(user_id):
     	return User.query.get(int(user_id))
 
-	@property
-	def password(self):
-		raise AttributeError("password is not a readable attribute")
+	# @property
+	# def password(self):
+	# 	raise AttributeError("password is not a readable attribute")
 
 	@password.setter
 	def password(self, password):
@@ -23,29 +24,7 @@ class User(db.Model):
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password)
 
-    def get_id(self):
-    	try:
-    		return unicode(self.id) #python 2
-    	except NameError:
-    		return str(self.id) # python 3
-
-	@property
-	def is_authenticated(self):
-		return True
-
-    @property
-    def is_active(self):
-        return True
-
-    @property
-    def is_anonymous(self):
-    	return False
-
-	@lm.user_loader
-	def load_user(id):
-		return User.query.get(int(id))
-
-	#for registration
+    #for registration
 	confirmed = db.Column(db.Boolean, default=False)
 	def generate_confirmation_token(self, expiration=3600):
 		s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -64,7 +43,7 @@ class User(db.Model):
 		return True
 
     def __repr__(self):
-        return '<User %r>' % (self.username)
+        return '<User %r> password_hash %r email %r' % (self.username, self.password_hash, self.email)
 
     	
 
