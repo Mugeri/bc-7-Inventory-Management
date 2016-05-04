@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash,check_password_hash
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-	import pdb; pdb.set_trace()
 	form = LoginForm()
 	if request.method == 'POST':
 		
@@ -15,9 +14,6 @@ def login():
 			user = User.query.filter_by(username=form.username.data).first()
 			if user is not None and check_password_hash(user.password_hash, form.password.data):
 				session['username']=form.username.data
-				# user.is_active = True
-				# login_user(user)
-				#import pdb; pdb.set_trace()
 				return redirect(url_for('user', username=str(user.username)))
 
 	flash('Invalid username or password.')
@@ -26,7 +22,7 @@ def login():
 @app.route('/logout')
 def logout():
 	session.pop('username', None)
-	return redirect(url_for('/index'))
+	return redirect(url_for('/login'))
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -48,18 +44,20 @@ def user(username):
     assets = Assets.query.all()
     if user == None:
         flash('User %s not found.' % username)
-        return redirect(url_for('index'))
-    if user.level == 1:
-    	return render_template('admin.html', user=user, users=User.query.all(), assets=Assets.query.all())
-	if user.level == 2:
-		return render_template('jadmin.html', user=user)
-    return render_template('user.html', user=user)
+        return redirect(url_for('login'))
+    else:
+    	if user.level == 1:
+    		return render_template('admin.html', user=user, users=users, assets=assets)
+		if user.level == 2:
+			return render_template('jadmin.html', user=user, assets=assets)
+		else:
+			return render_template('user.html', user=user)
 
 @app.route('/asset', methods=['GET','POST'])
 def asset():
 	if request.method == 'POST':
 		import pdb; pdb.set_trace()
-		if request.form['assetName']:
+		if request.form['assetName'] is not None:
 			form = {'assetname': request.form['assetName'],
 					'assetdescription': request.form['description'],
 					'serialnumber': request.form['serialno'],
@@ -81,12 +79,16 @@ def assigned():
 	if request.method == 'POST':
 		if request.form['userid']:
 			form = {'user_id': request.form['userid'],
-					'assetid': request.form['assetid']
+					'assetid': request.form['assetid'],
 					'reclaim': request.form['reclaim']
 					}
 
 			assign = Assigned(**form)
 			db.session.add(assign)
+			db.session.commit()
+			asset = Assets.query.filter_by(assetid=request.form['assetid']).first()
+			asset.available=False
+			db.session.add(asset)
 			db.session.commit()
 			flash('asset successfully assigned')
 			reload

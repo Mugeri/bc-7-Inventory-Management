@@ -2,55 +2,14 @@
 {% block page_content %}
 <section class="content">
     <!-- Control Sidebar Toggle Button -->
-    <div class="row" id="users">
-
-        <section class="col-sm-7 connectedSortable"> 
-          <!-- section users -->
-          
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-inbox"></i>Users</li>
-            </ul>
-            <div class="tab-content no-padding">
-              <!-- Morris chart - Sales -->
-              <table class="table">
-              <tr>
-                <th>UserName</th>
-                <th>Email</th>
-                <th>UserLevel</th>
-              </tr>
-              {% for i in users: %}
-                {% if i.level == 1 or i.level == 2 %}
-                <tr>
-                  <td>{{ i.username}}</td>
-                  <td>{{ i.email}}</td>
-                  <td>admin</td>
-                  <td><button onclick='Confirmer()'>remove admin</button></td>
-                </tr>
-                {% else: %}
-                <tr>
-                  <td>{{ i.username}}</td>
-                  <td>{{ i.email}}</td>
-                  <td>user</td>
-                  <td>make admin<td>
-                </tr>
-                {% endif %}
-              {% endfor %}
-            
-          </table>
-            </div>
-          </div>
-        </section><!-- section users -->
-      </div>
-    
-      <div class="row" id="assets">
-        <section class="col-sm-7 connectedSortable"><!-- section assets -->
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs pull-right">
+    <div class="row" id="assets">
+      <section class="col-sm-7 connectedSortable"><!-- section assets -->
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-inbox"></i>Assets</li>
-            </ul>
-            <div class="tab-content no-padding">
-              <table class="table">
+          </ul>
+          <div class="tab-content no-padding">
+            <table class="table">
               <tr>
                 <th>Name</th>
                 <th>Description</th>
@@ -73,10 +32,10 @@
                 {% endif %}
               {% endfor %}
             
-          </table>
+            </table>
             </div>
           </div>
-    </section><!-- section Assets -->
+        </section><!-- section Assets -->
     </div>
     <div class="row" id="assigned">
         <section class="col-sm-7 connectedSortable"><!-- section assigned -->
@@ -210,7 +169,7 @@
     <div class="pull-right hidden-xs">
       <b>Version</b> 0.0.1
     </div>
-    <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kissdevs</a>.</strong> All rights
+    <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kromsystems</a>.</strong> All rights
     reserved.
   </footer>
 
