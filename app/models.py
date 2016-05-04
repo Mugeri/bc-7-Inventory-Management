@@ -7,7 +7,25 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(120), index=True, unique=True)
-    level = db.Column(db.Integer, index=True, unique=False)
+    level = db.Column(db.Integer, index=True, unique=False, default=3)
+
+    def promote_user(self, user):
+		level = user.level
+		print "level is %r" %user.level
+		if level == 3:
+			level = 2
+			user.level = level
+			db.session.add(user)
+			db.session.commit()
+			return '%r has been made admin' % user.username
+		elif level == None:
+			level = 3
+			user.level = level
+			db.session.add(user)
+			db.session.commit()
+			return "%r is now just a normal user"
+		return '%r is already an admin' % user.username
+
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -42,8 +60,15 @@ class User(db.Model):
 		db.session.add(self)
 		return True
 
+	def delete_user(self, user):
+		session.delete(user)
+		session.commit()
+		return (("%r successfully deleted!") % user.username)
+
+
     def __repr__(self):
-        return '<User %r> password_hash %r email %r' % (self.username, self.password_hash, self.email)
+        return '<User %r> password_hash %r email %r level %r' \
+        % (self.username, self.password_hash, self.email, self.level)
 
     	
 
@@ -53,8 +78,9 @@ class Assets(db.Model):
 	assetdescription = db.Column(db.String(500), index=True, unique=False)
 	serialnumber = db.Column(db.String(50), index=True, unique=True)
 	andelaserial = db.Column(db.String(50), index=True, unique=True)
-	datebought = db.Column(db.DateTime)
+	#datebought = db.Column(db.DateTime, default=datetime('now','localtime'))
 	available = db.Column(db.Boolean, unique=False, default=True)
+
 
 	def __repr__(self):
 		return '<Asset %r>' % (self.assetname)

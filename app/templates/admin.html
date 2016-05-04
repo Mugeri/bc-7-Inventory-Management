@@ -1,10 +1,164 @@
 {% extends "base.html" %}
-
 {% block page_content %}
-           <!-- Control Sidebar Toggle Button -->
-          
-    
+    <!-- Control Sidebar Toggle Button -->
+    <div class="row" id="users">
+        <section class="col-sm-7 connectedSortable">
+          <!-- Custom tabs (Charts with tabs)-->
+          <div class="nav-tabs-custom">
+            <!-- Tabs within a box -->
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>Users</li>
+            </ul>
+            <div class="tab-content no-padding">
+              <!-- Morris chart - Sales -->
+              <table class="table">
+              <tr>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>UserLevel</th>
+              </tr>
+              {% for i in users: %}
+                {% if i.level == 1 or i.level == 2 %}
+                <tr>
+                  <td>{{ i.susername}}</td>
+                  <td>{{ i.email}}</td>
+                  <td>admin</td>
+                  <td><button onclick='Confirmer()'>remove admin</button></td>
+                </tr>
+                {% else: %}
+                <tr>
+                  <td>{{ i.username}}</td>
+                  <td>{{ i.email}}</td>
+                  <td>user</td>
+                  <td>make admin<td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            
+          </table>
+            </div>
+          </div>
+    </section>
     <!-- /.content -->
+  </div>
+  <div class="row" id="assets">
+        <section class="col-sm-7 connectedSortable">
+          <div class="nav-tabs-custom">
+            <!-- Tabs within a box -->
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>Assets</li>
+            </ul>
+            <div class="tab-content no-padding">
+              <!-- Morris chart - Sales -->
+              <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Availability</th>
+
+              </tr>
+              {% for i in assets: %}
+                {% if i.available == True %}
+                <tr>
+                  <td>{{ i.assetname}}</td>
+                  <td>{{ i.assetdescription}}</td>
+                  <td>available</td>
+                </tr>
+                {% else: %}
+                <tr>
+                  <td>{{ i.assetname}}</td>
+                  <td>{{ i.assetdescription}}</td>
+                  <td>not available</td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            
+          </table>
+            </div>
+          </div>
+    </section>
+    <!-- /.content -->
+    <section class="col-sm-5 connectedSortable">
+          <!-- Calendar -->
+          <div class="box box-solid bg-green-gradient">
+            <div class="box-header">
+      <h3 class="box-title">Add an asset</h3>
+      <form class="form-horizontal" role="form" action='/asset' method='POST' enctype="multipart/form-data">
+      <div class="form-group">
+      <label class="control-label col-sm-2" for="assetName">Asset Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="assetName" name="assetName"placeholder="Enter name of asset"></br>
+      </div>
+      <label class="control-label col-sm-2" for="description">Description</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="description" name="description" placeholder="Enter a description of the asset"></br>
+      </div>
+      <label class="control-label col-sm-2" for="serialno">Serial Number</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="serialno" name="serialno"placeholder="Enter the serial number"></br>
+      </div>
+      <label class="control-label col-sm-2" for="serialcode">Andela Serial Code</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="serialcode" name="serialcode"placeholder="Enter Andela's serial code"></br>
+      </div>
+      </div>
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default" name='addAsset'>add Asset</button>
+    </div>
+
+</form>
+            </div>
+
+  </section>
+  <section class="col-sm-5 connectedSortable">
+          <!-- Calendar -->
+          <div class="box box-solid bg-green-gradient">
+            <div class="box-header">
+      <h3 class="box-title">Asign an asset</h3>
+      <form class="form-horizontal" role="form" action='/assigned' method='POST' enctype="multipart/form-data">
+      <div class="form-group">
+      <label class="control-label col-sm-2" for="assetid">Asset Name</label>
+      <div class="col-sm-10">
+      <select name='assetid' class='form-control' data-style='btn-primary'>{%for i in assets: %}
+        <option value={{i.id}}>{{i.assetname}}</option> {% endfor %}
+      </div></br>
+      <label class="control-label col-sm-2" for="userid">User Name</label>
+      <div class="col-sm-10">
+      <select name='userid' class='form-control' data-style='btn-primary'>{%for x in users: %}
+        <option value={{x.id}}>{{x.username}}</option> {% endfor %}
+      </div></br>
+      <label class="control-label col-sm-2" for="reclaim">Reclaim Date</label>
+      <div class="col-sm-10">
+        <input type="date" class="form-control" id="reclaim" name="reclaim"></br>
+      </div>
+      </div>
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default" name='assign'>assign</button>
+    </div>
+
+</form>
+            </div>
+
+  </section>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <!--The calendar -->
+              <div id="calendar" style="width: 100%"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer text-black">
+              <div class="row">
+                <div class="col-sm-6">
+                  <!-- Progress bars -->
+                  
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+          </div>
+          <!-- /.box -->
+
+        
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
@@ -14,201 +168,5 @@
     <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kissdevs</a>.</strong> All rights
     reserved.
   </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript::;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <i class="menu-icon fa fa-user bg-yellow"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
-
-                <p>New phone +1(800)555-1234</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
-
-                <p>nora@example.com</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <i class="menu-icon fa fa-file-code-o bg-green"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
-
-                <p>Execution time 5 seconds</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript::;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="label label-danger pull-right">70%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <h4 class="control-sidebar-subheading">
-                Update Resume
-                <span class="label label-success pull-right">95%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-success" style="width: 95%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <h4 class="control-sidebar-subheading">
-                Laravel Integration
-                <span class="label label-warning pull-right">50%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript::;">
-              <h4 class="control-sidebar-subheading">
-                Back End Framework
-                <span class="label label-primary pull-right">68%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Allow mail redirect
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Other sets of options are available
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Expose author name in posts
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Allow the user to show his name in blog posts
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <h3 class="control-sidebar-heading">Chat Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Show me as online
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Turn off notifications
-              <input type="checkbox" class="pull-right">
-            </label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Delete chat history
-              <a href="javascript::;" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
-            </label>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-
-
 
 {% endblock %}

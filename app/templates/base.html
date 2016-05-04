@@ -144,7 +144,7 @@ desired effect
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="#users">
             <i class="fa fa-users"></i>
             <span>Users</span>
 			<i class="fa fa-angle-left pull-right"></i>
@@ -153,9 +153,9 @@ desired effect
         </li>
         
         <li>
-          <a href="packages.php">
+          <a href="#assets">
             <i class="fa fa-suitcase"></i>
-            <span>Packages</span>
+            <span>Assets</span>
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           
@@ -188,22 +188,10 @@ desired effect
 
       <!-- Your Page Content Here -->
       {% block body %}
-		<div class="container">
-		{% for message in get_flashed_messages() %}
-			<div class="alert alert-warning">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			{{ message }}
-			</div>
-		{% endfor %}
-		{% block page_content %}
-			<ul class="nav navbar-nav navbar-right">\
-				{% if current_user.is_authenticated %}
-				<li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li>
-				{% else %}
-				<li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
-			{% endif %}
+		
 
-			</ul>
+		{% block page_content %}
+			
 		{% endblock %}
 		</div>
 	{% endblock %}
@@ -223,6 +211,7 @@ desired effect
 	  $.widget.bridge('uibutton', $.ui.button);
 	</script>
 	<!-- Bootstrap 3.3.5 -->
+  <script src="../../static/bootstrap/js/visibility.js"></script>
 	<script src="../../static/bootstrap/js/bootstrap.min.js"></script>
 	<!-- Morris.js charts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
