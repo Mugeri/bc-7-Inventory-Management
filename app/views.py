@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g, Flask
-#from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db
-from .models import User, Assets
+from .models import User, Assets, Assigned
 from .forms import LoginForm, RegistrationForm
 from werkzeug.security import generate_password_hash,check_password_hash
 
@@ -42,21 +42,24 @@ def user(username):
     user = User.query.filter_by(username=username).first()
     users = User.query.all()
     assets = Assets.query.all()
+    assigned = Assigned.query.all()
+    
+
     if user == None:
         flash('User %s not found.' % username)
         return redirect(url_for('login'))
     else:
     	if user.level == 1:
-    		return render_template('admin.html', user=user, users=users, assets=assets)
-		if user.level == 2:
-			return render_template('jadmin.html', user=user, assets=assets)
-		else:
-			return render_template('user.html', user=user)
+    		return render_template('admin.html', user=user, users=users, assets=assets, assigned=assigned)
+    	elif user.level == 2:
+    		return render_template('jadmin.html', user=user, users=users, assets=assets, assigned=assigned)
+    	else:
+			return render_template('user.html', user=user, assigned=assigned, assets=assets)
 
 @app.route('/asset', methods=['GET','POST'])
 def asset():
 	if request.method == 'POST':
-		import pdb; pdb.set_trace()
+		
 		if request.form['assetName'] is not None:
 			form = {'assetname': request.form['assetName'],
 					'assetdescription': request.form['description'],
@@ -77,19 +80,65 @@ def asset():
 @app.route('/assigned', methods=['GET', 'POST'])
 def assigned():
 	if request.method == 'POST':
+		
 		if request.form['userid']:
 			form = {'user_id': request.form['userid'],
 					'assetid': request.form['assetid'],
-					'reclaim': request.form['reclaim']
+					'reclaim_date': request.form['reclaim']
 					}
 
 			assign = Assigned(**form)
 			db.session.add(assign)
 			db.session.commit()
-			asset = Assets.query.filter_by(assetid=request.form['assetid']).first()
+			asset = Assets.query.filter_by(id=request.form['assetid']).first()
 			asset.available=False
 			db.session.add(asset)
 			db.session.commit()
 			flash('asset successfully assigned')
 			reload
+	return redirect(url_for('user', username=session['username']))
+
+@app.route('/reclaim', methods=['GET', 'POST'])
+def reclaim():
+	
+	if request.method == 'POST':
+		assigned_id = request.values['reclaim']
+		u = Assigned.query.filter_by(id=assigned_id).first()
+		asset_id = u.assetid
+		x = Assets.query.filter_by(id=asset_id).first()
+		x.availability = True
+		db.session.add(x)
+		db.session.delete(u)
+		db.session.commit()
+		flash('reclaim successful')
+		return redirect(url_for('user', username=session['username']))
+
+	return redirect(url_for('user', username=session['username']))
+
+@app.route('/demote', methods=['GET', 'POST'])
+def demote():
+	
+	if request.method == 'POST':
+		user_id = request.values['demote']
+		u = User.query.filter_by(id=user_id).first()
+		u.level = 3
+		db.session.add(u)
+		db.session.commit()
+		flash('Successfully removed as Administrator')
+		return redirect(url_for('user', username=session['username']))
+
+	return redirect(url_for('user', username=session['username']))
+
+@app.route('/promote', methods=['GET', 'POST'])
+def promote():
+	if request.method == 'POST':
+		import pdb; pdb.set_trace()
+		user_name = request.form['userid']
+		u = User.query.filter_by(username=user_name).first()
+		u.level = 2
+		db.session.add(u)
+		db.session.commit()
+		flash('Successfully made Administrator')
+		return redirect(url_for('user', username=session['username']))
+
 	return redirect(url_for('user', username=session['username']))

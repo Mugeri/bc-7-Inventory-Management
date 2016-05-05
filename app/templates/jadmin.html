@@ -2,14 +2,54 @@
 {% block page_content %}
 <section class="content">
     <!-- Control Sidebar Toggle Button -->
-    <div class="row" id="assets">
-      <section class="col-sm-7 connectedSortable"><!-- section assets -->
-        <div class="nav-tabs-custom">
-          <ul class="nav nav-tabs pull-right">
+    <div class="row" id="users">
+
+        <section class="col-sm-7 connectedSortable"> 
+          <!-- section users -->
+          
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>Users</li>
+            </ul>
+            <div class="tab-content no-padding">
+              <!-- Morris chart - Sales -->
+              <table class="table">
+              <tr>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>UserLevel</th>
+              </tr>
+              {% for i in users: %}
+                {% if i.level == 1 or i.level == 2 %}
+                <tr>
+                  <td>{{ i.username}}</td>
+                  <td>{{ i.email}}</td>
+                  <td>admin</td>
+                </tr>
+                {% else: %}
+                <tr>
+                  <td>{{ i.username}}</td>
+                  <td>{{ i.email}}</td>
+                  <td>user</td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            
+          </table>
+            </div>
+          </div>
+        </section><!-- section users -->
+        
+      </div>
+    
+      <div class="row" id="assets">
+        <section class="col-sm-7 connectedSortable"><!-- section assets -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
               <li class="pull-left header"><i class="fa fa-inbox"></i>Assets</li>
-          </ul>
-          <div class="tab-content no-padding">
-            <table class="table">
+            </ul>
+            <div class="tab-content no-padding">
+              <table class="table">
               <tr>
                 <th>Name</th>
                 <th>Description</th>
@@ -32,48 +72,10 @@
                 {% endif %}
               {% endfor %}
             
-            </table>
-            </div>
-          </div>
-        </section><!-- section Assets -->
-    </div>
-    <div class="row" id="assigned">
-        <section class="col-sm-7 connectedSortable"><!-- section assigned -->
-          <div class="nav-tabs-custom">
-            
-            <ul class="nav nav-tabs pull-right">
-              <li class="pull-left header"><i class="fa fa-inbox"></i>Assigned</li>
-            </ul>
-            <div class="tab-content no-padding">
-              
-              <table class="table">
-              <tr>
-                <th>UserName</th>
-                <th>Asset Name</th>
-                <th>Reclaim on</th>
-
-              </tr>
-              {% for z in Assigned: %}
-                {% if i.available: %}
-                <tr>
-                  <td>{{ i.assetname}}</td>
-                  <td>{{ i.assetdescription}}</td>
-                  <td>available</td>
-                </tr>
-                {% else: %}
-                <tr>
-                  <td>{{ i.assetname}}</td>
-                  <td>{{ i.assetdescription}}</td>
-                  <td>not available</td>
-                </tr>
-                {% endif %}
-              {% endfor %}
-            
           </table>
             </div>
           </div>
-    </section><!-- section assigned -->
-    <!-- /.content -->
+    </section><!-- section Assets -->
     <section class="col-sm-5 connectedSortable">
           <!-- Calendar -->
           <div class="box box-solid bg-green-gradient">
@@ -106,71 +108,99 @@
         </div>
       </div>
   </section>
-  <section class="col-sm-5 connectedSortable">
-    <!-- Calendar -->
-    <div class="box box-solid bg-green-gradient">
-      <div class="box-header">
-      <h3 class="box-title">Asign an asset</h3>
-      <form class="form-horizontal" role="form" action='/assigned' method='POST' enctype="multipart/form-data">
-      <div class="form-group">
-        <label class="control-label col-sm-2" for="userid">User Name</label>
-        <div class="col-sm-10">
-        <select name='userid' class='form-control' data-style='btn-primary'>
-          {%for x in users: %}
-            <option value={{x.id}} >{{x.username}}</option> 
-          {% endfor %}
-          
-        </div>
-
-        <label class="control-label col-sm-2" for="reclaim">Reclaim Date</label>
-        <div class="col-sm-10">
-          <input type="date" class="form-control" id="reclaim" name="reclaim"></br>
-        </div>
-
-        <label class="control-label col-sm-2" for="assetid">Asset Name</label>
-        <div class="col-sm-10">
-        <select name='assetid' class='form-control' data-style='btn-primary'>
-          {%for i in assets: %}
-            <option value={{i.id}}>{{i.assetname}}</option> 
-          {% endfor %}
-        </div>
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default" name='assign'>assign</button>
     </div>
-    </div>
+    <div class="row" id="assigned">
+        <section class="col-sm-7 connectedSortable"><!-- section assigned -->
+          <div class="nav-tabs-custom">
+            
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>Assigned</li>
+            </ul>
+            <div class="tab-content no-padding">
+              
+              <table class="table">
+              <tr>
+                <th>UserName</th>
+                <th>Asset Name</th>
+                <th>Reclaim on</th>
+                <th></th>
 
-</form>
-            </div>
-
-  </section>
-  </section>
-            <!-- /.box-header -->
-            <div class="box-body no-padding">
-              <!--The calendar -->
-              <div id="calendar" style="width: 100%"></div>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer text-black">
-              <div class="row">
-                <div class="col-sm-6">
-                  <!-- Progress bars -->
-                  
-                <!-- /.col -->
-              </div>
-              <!-- /.row -->
+              </tr>
+              {% for z in assigned: %}
+                {% for x in users: %}
+                  {% if z.user_id == x.id: %}
+                <tr>
+                  <td>{{ x.username}}</td>
+                  {% endif %}
+                {% endfor %}
+                {% for y in assets: %}
+                  {% if y.id == z.assetid: %}
+                  <td>{{ y.assetname}}</td>
+                  {% endif %}
+                {% endfor %}
+                  <td>{{z.reclaim_date}}</td>
+                  <td>
+                    <form action = "/reclaim" method = "post">
+                      <button name='reclaim' value={{z.id}}>reclaim asset</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+              
+            
+          </table>
             </div>
           </div>
-          <!-- /.box -->
+    </section><!-- section assigned -->
+    <!-- /.content -->
+    
+  <section class="col-sm-5 connectedSortable">
+    <div class="box box-solid bg-green-gradient">
+      <div class="box-header">
+      <h3 class="box-title">Assign an asset</h3>
+      <form class="form-horizontal" role="form" action='/assigned' method='POST' enctype="multipart/form-data">
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="userid">User Name</label>
+          <div class="col-sm-8">
+            <select name='userid' class='form-control' data-style='btn-primary'>
+              {%for x in users: %}
+                <option value={{x.id}} >{{x.username}}</option> 
+              {% endfor %}  
+            </select>
+          </div></br>
+          <label class="control-label col-sm-2" for="assetid">Asset</label>
+          <div class="col-sm-8">
+            <select name='assetid' class='form-control' data-style='btn-primary'>
+              {%for i in assets: %}
+                {% if i.available: %}
+                  <option value={{i.id}}>{{i.assetname}}</option> 
+                {% endif %}
+              {% endfor %}
+            </select>
+           </div></br>
+            <label class="control-label col-sm-2" for="reclaim">Reclaim Date</label>
+              <div class="col-sm-8">
+                <input type="date" class="form-control" id="reclaim" name="reclaim">
+              </div>
 
-        
-  </div>
+            </div>
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" name='assign'>assign</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    </section>
+  </section>
+ <div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
       <b>Version</b> 0.0.1
     </div>
-    <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kromsystems</a>.</strong> All rights
+    <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kissdevs</a>.</strong> All rights
     reserved.
   </footer>
+</div>
 
 {% endblock %}

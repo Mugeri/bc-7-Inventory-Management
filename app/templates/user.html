@@ -1,7 +1,90 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-  <h1>Welcome: {{ user.username }}!</h1>
-  
+<section class="content">
+    <!-- Control Sidebar Toggle Button -->
+    <div class="row" id="assets">
+        <section class="col-sm-7 connectedSortable"><!-- section assets -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>Assets</li>
+            </ul>
+            <div class="tab-content no-padding">
+              <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Availability</th>
+
+              </tr>
+              {% for i in assets: %}
+                {% if i.available == True %}
+                <tr>
+                  <td>{{ i.assetname}}</td>
+                  <td>{{ i.assetdescription}}</td>
+                  <td>available</td>
+                </tr>
+                {% else: %}
+                <tr>
+                  <td>{{ i.assetname}}</td>
+                  <td>{{ i.assetdescription}}</td>
+                  <td>not available</td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            
+          </table>
+            </div>
+          </div>
+    </section><!-- section Assets -->
+    
+    </div>
+    <div class="row" id="assigned">
+        <section class="col-sm-7 connectedSortable"><!-- section assigned -->
+          <div class="nav-tabs-custom">
+            
+            <ul class="nav nav-tabs pull-right">
+              <li class="pull-left header"><i class="fa fa-inbox"></i>My Assets</li>
+            </ul>
+            <div class="tab-content no-padding">
+              
+              <table class="table">
+              <tr>
+                <th>Asset Name</th>
+                <th>Return on</th>
+                <th></th>
+
+              </tr>
+              {% for z in assigned: %}
+                {% if z.user_id == user.id: %}
+                <tr>
+                   {% for y in assets: %}
+	                  {% if y.id == z.assetid: %}
+	                  	<td>{{ y.assetname}}</td>
+	                  {% endif %}
+	                {% endfor %}
+                  <td>{{z.reclaim_date}}</td>
+                {% endif %}
+              {% endfor %} 
+                </tr>
+              
+            
+          </table>
+            </div>
+          </div>
+    </section><!-- section assigned -->
+    <!-- /.content -->
+    
+  </section>
+ <div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 0.0.1
+    </div>
+    <strong>Copyright &copy; 2015 <a href="http://www.kromsystems.com">Kissdevs</a>.</strong> All rights
+    reserved.
+  </footer>
+</div>
 
 {% endblock %}

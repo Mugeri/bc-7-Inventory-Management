@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy import DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
 
@@ -35,14 +36,7 @@ class User(db.Model):
 	# def password(self):
 	# 	raise AttributeError("password is not a readable attribute")
 
-	@password.setter
-	def password(self, password):
-		self.password_hash = generate_password_hash(password)
-
-	def verify_password(self, password):
-		return check_password_hash(self.password_hash, password)
-
-    #for registration
+	#for registration
 	confirmed = db.Column(db.Boolean, default=False)
 	def generate_confirmation_token(self, expiration=3600):
 		s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -89,7 +83,7 @@ class Assigned(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	assetid = db.Column(db.Integer, db.ForeignKey('assets.id'))
-	reclaim = db.Column(db.DateTime)
+	reclaim_date = db.Column(db.String)
 
 	def __repr__(self):
 		return '<User %r><Asset %r>' %(self.user_id, self.assetid)
