@@ -9,20 +9,22 @@ from werkzeug.security import generate_password_hash,check_password_hash
 def login():
 	form = LoginForm()
 	if request.method == 'POST':
-		
+		import pdb; pdb.set_trace()	
 		if form.validate_on_submit():
 			user = User.query.filter_by(username=form.username.data).first()
 			if user is not None and check_password_hash(user.password_hash, form.password.data):
 				session['username']=form.username.data
-				return redirect(url_for('user', username=str(user.username)))
+				login_user(user)
+				return redirect(url_for('user', username=str(session['username'])))
 
 	flash('Invalid username or password.')
 	return render_template('/login.html', form=form)
 
 @app.route('/logout')
 def logout():
-	session.pop('username', None)
-	return redirect(url_for('/login'))
+	#session.pop('username', None)
+	logout_user()
+	return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -31,6 +33,7 @@ def register():
 		
 		user = User(email=form.email.data, username=form.username.data, \
 			password_hash=generate_password_hash(form.password.data))
+
 		db.session.add(user)
 		db.session.commit()
 		flash('You can now login.')
@@ -38,6 +41,7 @@ def register():
 	return render_template('register.html', form=form)
 
 @app.route('/user/<username>')
+@login_required
 def user(username):
     user = User.query.filter_by(username=username).first()
     users = User.query.all()
@@ -57,6 +61,7 @@ def user(username):
 			return render_template('user.html', user=user, assigned=assigned, assets=assets)
 
 @app.route('/asset', methods=['GET','POST'])
+@login_required
 def asset():
 	if request.method == 'POST':
 		
@@ -78,6 +83,7 @@ def asset():
 	return redirect(url_for('user', username=session['username']))
 
 @app.route('/assigned', methods=['GET', 'POST'])
+@login_required
 def assigned():
 	if request.method == 'POST':
 		
@@ -99,14 +105,16 @@ def assigned():
 	return redirect(url_for('user', username=session['username']))
 
 @app.route('/reclaim', methods=['GET', 'POST'])
+@login_required
 def reclaim():
 	
 	if request.method == 'POST':
 		assigned_id = request.values['reclaim']
 		u = Assigned.query.filter_by(id=assigned_id).first()
 		asset_id = u.assetid
+		import pdb; pdb.set_trace()
 		x = Assets.query.filter_by(id=asset_id).first()
-		x.availability = True
+		x.available = True
 		db.session.add(x)
 		db.session.delete(u)
 		db.session.commit()
@@ -116,6 +124,7 @@ def reclaim():
 	return redirect(url_for('user', username=session['username']))
 
 @app.route('/demote', methods=['GET', 'POST'])
+@login_required
 def demote():
 	
 	if request.method == 'POST':
@@ -130,6 +139,7 @@ def demote():
 	return redirect(url_for('user', username=session['username']))
 
 @app.route('/promote', methods=['GET', 'POST'])
+@login_required
 def promote():
 	if request.method == 'POST':
 		import pdb; pdb.set_trace()

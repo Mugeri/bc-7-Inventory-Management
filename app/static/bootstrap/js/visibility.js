@@ -1,20 +1,17 @@
-// $(function(){
-//     $("#assets").hide();
-//     $("#previewU").on("click", function(){
-//         $("#assets, #users").toggle();
-//     });
-//     $("#previewA").on("click", function(){
-//         $("#assets, #users").toggle();
-//     });
-// });
+$(function(){
+	$("#assetsu").hide();
+    $(".previewD").on("click", function(){
+        $("#assetsu, #assignedu").toggle();
+    });
+    $(".previewA").on("click", function(){
+        $("#assetsu, #assignedu").toggle();
+    });
+});
 $(function(){
      $("#assets").hide();
      $("#assigned").hide();
  });
-$(function(){
-     $("#assetsu").hide();
-     
- });
+
 function showAssigned(){
 	document.getElementById('assigned').style.display = "block";
 	document.getElementById('users').style.display = "none";
