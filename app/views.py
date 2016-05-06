@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 def login():
 	form = LoginForm()
 	if request.method == 'POST':
-		import pdb; pdb.set_trace()	
+		
 		if form.validate_on_submit():
 			user = User.query.filter_by(username=form.username.data).first()
 			if user is not None and check_password_hash(user.password_hash, form.password.data):
@@ -112,7 +112,7 @@ def reclaim():
 		assigned_id = request.values['reclaim']
 		u = Assigned.query.filter_by(id=assigned_id).first()
 		asset_id = u.assetid
-		import pdb; pdb.set_trace()
+		
 		x = Assets.query.filter_by(id=asset_id).first()
 		x.available = True
 		db.session.add(x)
@@ -142,7 +142,7 @@ def demote():
 @login_required
 def promote():
 	if request.method == 'POST':
-		import pdb; pdb.set_trace()
+		
 		user_name = request.form['userid']
 		u = User.query.filter_by(username=user_name).first()
 		u.level = 2
